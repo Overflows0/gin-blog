@@ -17,13 +17,13 @@ type Claims struct {
 
 func GenerateToken(username, password string) (string, error) {
 	nowTime := time.Now()
-	expiredTime := nowTime.Add(3 * time.Hour)
+	expireTime := nowTime.Add(3 * time.Hour)
 
 	claims := Claims{
 		username,
 		password,
 		jwt.StandardClaims{
-			ExpiresAt: expiredTime.Unix(),
+			ExpiresAt: expireTime.Unix(),
 			Issuer:    "gin-blog",
 		},
 	}
@@ -32,7 +32,6 @@ func GenerateToken(username, password string) (string, error) {
 	token, err := tokenClaims.SignedString(jwtSecret)
 
 	return token, err
-
 }
 
 func ParseToken(token string) (*Claims, error) {

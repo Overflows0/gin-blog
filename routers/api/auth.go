@@ -5,7 +5,6 @@ import (
 	"gin-blog/pkg/e"
 	"gin-blog/pkg/util"
 	"log"
-	"net/http"
 
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
@@ -36,16 +35,17 @@ func GetAuth(c *gin.Context) {
 				data["token"] = token
 				code = e.SUCCESS
 			}
+
 		} else {
 			code = e.ERROR_AUTH
 		}
 	} else {
 		for _, err := range valid.Errors {
-			log.Printf("err.key: %s, err.Message: %s", err.Key, err.Message)
+			log.Println(err.Key, err.Message)
 		}
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	c.JSON(200, gin.H{
 		"code": code,
 		"msg":  e.GetMsg(code),
 		"data": data,
