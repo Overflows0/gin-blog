@@ -2,15 +2,19 @@ package models
 
 import (
 	"fmt"
+	"gin-blog/pkg/setting"
 	"log"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-
-	"gin-blog/pkg/setting"
+	"gorm.io/gorm/schema"
 )
 
 var db *gorm.DB
+
+type Repository[T schema.Tabler] struct {
+	DB *gorm.DB
+}
 
 type Model struct {
 	ID         int `gorm:"primary_key" json:"id"`
@@ -58,4 +62,13 @@ func init() {
 
 func CloseDB() {
 	defer db.Close()
+}
+
+func ReturnDB() *gorm.DB {
+	return db
+}
+
+func (r *Repository[T]) SetDB(db *gorm.DB) *Repository[T] {
+	r.DB = db
+	return r
 }

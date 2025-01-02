@@ -2,6 +2,8 @@ package setting
 
 import (
 	"gin-blog/pkg/logging"
+	"path/filepath"
+	"runtime"
 	"time"
 
 	"github.com/go-ini/ini"
@@ -17,12 +19,19 @@ var (
 	WriteTimeout time.Duration
 
 	PageSize  int
+	PageNum   int
 	JwtSecret string
 )
 
 func init() {
 	var err error
-	Cfg, err = ini.Load("conf/app.ini")
+	// 获取项目根目录
+	_, filename, _, _ := runtime.Caller(0)
+	rootPath := filepath.Join(filepath.Dir(filename), "../..")
+
+	// 使用根目录构建配置文件路径
+	configPath := filepath.Join(rootPath, "conf/app.ini")
+	Cfg, err = ini.Load(configPath)
 	if err != nil {
 		logging.Fatal("Fail to parse 'conf/app.ini': %v", err)
 	}
@@ -55,4 +64,5 @@ func LoadApp() {
 
 	JwtSecret = sec.Key("JWT_SECRET").MustString("!@)*#)!@U#@*!@!)")
 	PageSize = sec.Key("PAGE_SIZE").MustInt(10)
+	PageNum = sec.Key("PAGE_NUM").MustInt(1)
 }
